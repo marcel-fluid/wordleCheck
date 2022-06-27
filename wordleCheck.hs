@@ -4,22 +4,33 @@
 -- import qualified Data.ByteString as IOMode
 import System.IO
 import Control.Monad
+--import Data.Text.IO
+--import Data.Text hiding (filter)
 
 main :: IO ()
 main = do 
-        _              <- print "enter 5 chars upper case, use '_' for blank. eg. _OUL_"
-        inputLetters   <- getLine 
-        _              <- print "enter chars to exclude (upper case) eg. AREFGH"
-        excludeLetters <- getLine 
-        fileH          <- openFile "wordleWords.txt" ReadMode
-        contents       <- hGetContents fileH 
-        wordList       <- getWords contents inputLetters excludeLetters
-        outputWords wordList
-        hClose fileH
+    -- TODO: put the input into a separate fn (maybe helper?) that runs in a recursive loop.
+    -- first checks if input is q for quit, or n for new. new clears the StateT state
+    -- the state is the excluded letters.
+       liftM runQuestions
     where
+        runQuestions :: StateT String (IO ())
+        runQuestions = do 
+                        _              <- print "enter 5 chars upper case, use '_' for blank. eg. _OUL_"
+                        inputLetters   <- getLine 
+                        _              <- print "enter chars to exclude (upper case) eg. AREFGH"
+                        excludeLetters <- getLine 
+                        wordList       <- getWords fContents inputLetters excludeLetters
+                        outputWords wordList
+                        --TODO: put the exclude letters into the state
+                        --TODO: check for 'new' and 'quit'
+       
+        fContents ::  IO String
+        fContents = readFile "wordleWords.txt"     
+
         getWords :: String -> String -> String -> IO [String]
         getWords fileContents inputLetters exclLetters = do 
-                                                let allWords = words fileContents
+                                                let allWords   = words fileContents
                                                     fiverWords = filter (\x -> length x == 5) allWords
                                                 remainingWords <- filterByExclusions fiverWords exclLetters
                                                 filterByLetters remainingWords inputLetters
@@ -29,6 +40,13 @@ main = do
         outputWords [x]    = print x 
         outputWords (x:xs) = print x >> outputWords xs 
 
+        -- this caused issues with the file close operation, due to Lazy IO issues. 
+        -- getFileContents :: IO Text 
+        -- getFileContents = do 
+        --                 fileH          <- openFile "wordleWords.txt" ReadMode
+        --                 contents       <- hGetContents fileH
+        --                 hClose fileH
+        --                 return contents
 
 filterByLetters :: [String] -> String -> IO [String] 
 filterByLetters ws []     = return ws
