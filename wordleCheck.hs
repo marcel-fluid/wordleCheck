@@ -4,6 +4,8 @@
 -- import qualified Data.ByteString as IOMode
 import System.IO
 import Control.Monad
+import Control.Monad.Trans.State
+
 --import Data.Text.IO
 --import Data.Text hiding (filter)
 
@@ -14,7 +16,7 @@ main = do
     -- the state is the excluded letters.
        liftM runQuestions
     where
-        runQuestions :: StateT String (IO ())
+        runQuestions :: StateT String IO ()
         runQuestions = do 
                         _              <- print "enter 5 chars upper case, use '_' for blank. eg. _OUL_"
                         inputLetters   <- getLine 
@@ -24,6 +26,7 @@ main = do
                         outputWords wordList
                         --TODO: put the exclude letters into the state
                         --TODO: check for 'new' and 'quit'
+                        --TODO: add recursive call to runQuestions
        
         fContents ::  IO String
         fContents = readFile "wordleWords.txt"     
