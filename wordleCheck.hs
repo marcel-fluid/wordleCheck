@@ -9,6 +9,7 @@ import Control.Monad.Trans.State
 --import Data.Text.IO
 --import Data.Text hiding (filter)
 
+-- TODO: add some data types to the application. 
 main :: IO ()
 main = do 
     -- TODO: put the input into a separate fn (maybe helper?) that runs in a recursive loop.
