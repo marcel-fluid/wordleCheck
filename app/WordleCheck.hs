@@ -1,5 +1,14 @@
 {-# LANGUAGE DataKinds #-}
 
+module WordleCheck 
+            (
+                FileContents,
+                InputLetters,
+                ExcludedLetters,
+                FiveLetterWords,
+                runQuestions
+            )
+where 
 
 import System.IO
 import Control.Monad
@@ -12,16 +21,7 @@ type InputLetters    = String
 type ExcludedLetters = String
 type FiveLetterWords = [String]
 
-main :: IO ()
-main = do 
-         fContents <- readFile "wordleWords.txt"
-         let
-            allWords   = words fContents 
-            fiverWords = filter (\x -> length x == 5) allWords
-            -- here is the resulting type of following line:
-            -- *Main Control.Monad MTS> :t runStateT (runQuestions fivers)
-            -- runStateT (runQuestions fivers) :: String -> IO ((), String)
-         runStateT (runQuestions fiverWords) "" >> return ()
+
    
 runQuestions :: FiveLetterWords -> StateT String IO ()
 runQuestions flw = do 
