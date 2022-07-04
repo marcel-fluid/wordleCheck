@@ -73,7 +73,7 @@ outputWords (x:xs) = print x >> outputWords xs
 --                 hClose fileH
 --                 return contents
 
-filterByLetters :: [String] -> InputLetters -> IO [String] 
+filterByLetters :: FiveLetterWords -> InputLetters -> IO FiveLetterWords
 filterByLetters ws []     = return ws
 filterByLetters ws [l]    = if l /= '_' && l /= ' ' 
                                 then return $ filter (\x -> l == last x ) ws
@@ -85,7 +85,7 @@ filterByLetters ws (l:ls) = if l /= '_' && l /= ' '
                                         filterByLetters filtered ls
                                 else filterByLetters ws ls    
 
-filterByExclusions :: [String] -> ExcludedLetters -> IO [String] 
+filterByExclusions :: FiveLetterWords -> ExcludedLetters -> IO FiveLetterWords 
 filterByExclusions ws []     = return ws
 filterByExclusions ws [l]    = return $ filter (\x -> not (l `elem` x )) ws
 -- use the applicative pure to lift the filter call into the IO context
